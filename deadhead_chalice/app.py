@@ -1,22 +1,14 @@
-from flask import Flask
-from flask import request
-from flask_cors import CORS, cross_origin
-
 from chalice import Chalice
-import sqlite3
-from sqlite3 import Error
-import json
-import hashlib
-
 import requests
 import pandas as pd
 import random
-import re
 
-app = Flask(__name__)
-cors = CORS(app)
 
-@app.route("/concert")
+app = Chalice(app_name='deadhead_chalice')
+
+app.debug = True
+
+@app.route("/concert", cors=True)
 def get_concert():
   r = requests.get("https://archive.org/advancedsearch.php?q=collection%3A%22GratefulDead%22&output=json")
   data = r.json()['response']['docs']
@@ -24,8 +16,9 @@ def get_concert():
   concert = df.sample()
   return(concert.to_json(orient='records'))
 
-@app.route("/song")
+@app.route("/song", cors=True)
 def get_song():
+    request = app.current_request
     concert_url = request.args.get('concert')
     url = "https://archive.org/details/{}".format(concert_url)
     songs = requests.get(url+'?output=json')
