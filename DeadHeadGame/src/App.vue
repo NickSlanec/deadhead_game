@@ -83,7 +83,7 @@ export default {
       })
         .then(function (response) {
           console.log(response.data)
-          _self.concert = response.data[0]
+          _self.concert = response.data
           _self.get_song();
         })
         .catch(function (error) {
