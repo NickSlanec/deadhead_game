@@ -65,6 +65,6 @@ app.component('TieredMenu', TieredMenu)
 app.component('DynamicDialog', DynamicDialog)
 app.component('Dialog', Dialog)
 
-axios.defaults.baseURL = "https://6c1raj8mpb.execute-api.us-east-1.amazonaws.com/api" 
+axios.defaults.baseURL = "https://kpwhjrbzk0.execute-api.us-east-1.amazonaws.com/api/" 
 
 app.mount('#app')

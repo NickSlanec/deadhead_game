@@ -5,17 +5,17 @@ import random
 app = Chalice(app_name='deadhead_chalice')
 
 
-@app.route("/concert")
+@app.route("/concert", cors=True)
 def get_concert():
   r = requests.get("https://archive.org/advancedsearch.php?q=collection%3A%22GratefulDead%22&output=json")
   data = r.json()['response']['docs']
   return(random.choice(data))
 
-@app.route("/song")
+@app.route("/song", cors=True)
 def get_song():
     request = app.current_request
-    body = request.json_body
-    concert_url = body['concert']
+    params = request.query_params
+    concert_url = params.get('concert')
     url = "https://archive.org/details/{}".format(concert_url)
     songs = requests.get(url+'?output=json')
     songjson = songs.json()
