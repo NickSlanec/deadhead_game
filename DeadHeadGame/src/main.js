@@ -34,12 +34,14 @@ import OverlayPanel from 'primevue/overlaypanel';
 import TieredMenu from 'primevue/tieredmenu';
 import DynamicDialog from 'primevue/dynamicdialog';
 import Dialog from 'primevue/dialog';
+import Tooltip from 'primevue/tooltip';
 
 const app = createApp(App)
 
 app.use(PrimeVue);
 app.use(DialogService);
 
+app.directive('tooltip', Tooltip);
 
 app.component('Menubar',Menubar);
 app.component('DataTable', DataTable)
