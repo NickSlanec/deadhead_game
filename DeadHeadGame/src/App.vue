@@ -5,15 +5,19 @@
       <p class="text-700 text-3xl mt-0 mb-6">Test your Grateful Dead knowledge by guessing the year of the concert</p>
 
       <div class="w-full flex justify-content-center flex-wrap">
-        <Button v-if='song == null' rounded class='mb-4 w-3' label="Play" @click="get_concert()"></Button>
+        <Button v-if='song == null' rounded class='mb-4 w-3' label="Play" @click="get_concert()" :loading="loading"></Button>
       </div>
 
       <div v-if="song != null" class="w-full flex justify-content-center flex-wrap">
         <audio class="w-6" controls>
           <source :src="song.url" type="audio/mpeg">
         </audio>
+        <Button class="ml-3" icon="pi pi-refresh" rounded outlined aria-label="Filter" v-tooltip="'Get a new song'" @click="get_concert()"/>
+        <Button class="ml-3" icon="pi pi-exclamation-circle" severity="warning" rounded outlined aria-label="Filter" v-tooltip="'Report a broken song'"/>
+      </div>
+      <div v-if="song != null" class="w-full flex justify-content-center flex-wrap mt-3">
         <InputText class="ml-3" type="text" placeholder="Enter Year" v-model="guess.year" />
-        <Button class='ml-2' label="Submit" @click="guess_song()"/>
+        <Button class='ml-3' label="Submit" @click="guess_song()"/>
       </div>
 
       <Dialog v-model:visible="visible2" appendTo="body" :modal="true" :breakpoints="{'960px': '75vw', '640px': '100vw'}" :style="{width: '60vw'}" :closable="false" :showHeader="false">
@@ -69,12 +73,15 @@ export default {
         submitted: false,
         year: null,
       },
+      loading: false,
       visible2: false
     };
   },
   methods: {
     get_concert() {
       let _self = this;
+      _self.loading = true
+      _self.concert = {}
       axios({
         url: "/concert",
         method: "get",
@@ -87,29 +94,30 @@ export default {
           _self.get_song();
         })
         .catch(function (error) {
-
+          console.log(error)
         })
         .finally(function () {
         });
     },
     get_song() {
       let _self = this;
+      _self.song=null
       axios({
         url: "/song",
         method: "get",
         params: {
-          "concert": _self.concert['identifier']
+          "concert": _self.concert['concert_id']
         },
       })
         .then(function (response) {
           console.log(response.data)
           _self.song = response.data
-
         })
         .catch(function (error) {
-
+          console.log(error)
         })
         .finally(function () {
+          _self.loading = false
         });
     },
     guess_song() {
