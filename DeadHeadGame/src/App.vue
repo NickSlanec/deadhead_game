@@ -5,14 +5,14 @@
       <p class="text-700 text-3xl mt-0 mb-6">Test your Grateful Dead knowledge by guessing the year of the concert</p>
 
       <div class="w-full flex justify-content-center flex-wrap">
-        <Button v-if='song == null' rounded class='mb-4 w-3' label="Play" @click="get_concert()" :loading="loading"></Button>
+        <Button v-if='song == null' rounded class='mb-4 w-3' label="Play" @click="get_song()" :loading="loading"></Button>
       </div>
 
       <div v-if="song != null" class="w-full flex justify-content-center flex-wrap">
         <audio class="w-6" controls>
           <source :src="song.url" type="audio/mpeg">
         </audio>
-        <Button class="ml-3" icon="pi pi-refresh" rounded outlined aria-label="Filter" v-tooltip="'Get a new song'" @click="get_concert()"/>
+        <Button class="ml-3" icon="pi pi-refresh" rounded outlined aria-label="Filter" v-tooltip="'Get a new song'" @click="get_song()"/>
         <Button class="ml-3" icon="pi pi-exclamation-circle" severity="warning" rounded outlined aria-label="Filter" v-tooltip="'Report a broken song'"/>
       </div>
       <div v-if="song != null" class="w-full flex justify-content-center flex-wrap mt-3">
@@ -22,34 +22,34 @@
 
       <Dialog v-model:visible="visible2" appendTo="body" :modal="true" :breakpoints="{'960px': '75vw', '640px': '100vw'}" :style="{width: '60vw'}" :closable="false" :showHeader="false">
           <div class="flex flex-column align-items-center my-4">
-              <span v-if="guess.year == concert.year" class="flex align-items-center justify-content-center bg-cyan-100 text-cyan-800 mr-3 border-circle mb-3" style="width:64px;height:64px">
+              <span v-if="guess.year == song.year" class="flex align-items-center justify-content-center bg-cyan-100 text-cyan-800 mr-3 border-circle mb-3" style="width:64px;height:64px">
                   <i class="pi pi-check text-5xl"></i>
               </span>
-              <span v-if="guess.year != concert.year" class="flex align-items-center justify-content-center bg-red-100 text-red-800 mr-3 border-circle mb-3" style="width:64px;height:64px">
+              <span v-if="guess.year != song.year" class="flex align-items-center justify-content-center bg-red-100 text-red-800 mr-3 border-circle mb-3" style="width:64px;height:64px">
                   <i class="pi pi-times text-5xl"></i>
               </span>
-              <div v-if="guess.year == concert.year" class="font-bold text-2xl text-900">You are a true deadhead. {{guess.year}} is correct!</div>
-              <div v-if="guess.year != concert.year" class="font-bold text-2xl text-900">Good guess! {{guess.year}} is about {{ Math.abs(concert.year - guess.year) }} {{ (Math.abs(concert.year - guess.year) > 1) ? "years":"year"}} off.</div>
+              <div v-if="guess.year == song.year" class="font-bold text-2xl text-900">You are a true deadhead. {{guess.year}} is correct!</div>
+              <div v-if="guess.year != song.year" class="font-bold text-2xl text-900">Good guess! {{guess.year}} is about {{ Math.abs(song.year - guess.year) }} {{ (Math.abs(song.year - guess.year) > 1) ? "years":"year"}} off.</div>
           </div>
-          <!-- <div class="text-900 font-medium mb-2 text-xl">{{ concert.title }}</div> -->
+          <!-- <div class="text-900 font-medium mb-2 text-xl">{{ song.title }}</div> -->
         <div class="flex mb-4 flex-column lg:flex-row">
           <div class="surface-50 p-3 flex-auto mx-0 my-3 lg:my-0">
             <div class="text-600 mb-3">Concert</div>
-            <span class="text-blue-600 font-medium text-xl">{{ concert.title }}</span>
+            <span class="text-blue-600 font-medium text-xl">{{ song.concert_title }}</span>
           </div>
         </div>  
         <div class="flex mb-4 flex-column lg:flex-row">
           <div class="surface-50 p-3 flex-auto">
             <div class="text-600 mb-3">Song</div>
-            <span class="text-blue-600 font-medium text-xl">{{ song.title }}</span>
+            <span class="text-blue-600 font-medium text-xl">{{ song.song_title }}</span>
           </div>
           <div class="surface-50 p-3 flex-auto mx-0 my-3 lg:my-0 lg:mx-3">
             <div class="text-600 mb-3">Year</div>
-            <span class="text-blue-600 font-medium text-xl">{{ concert.year }}</span>
+            <span class="text-blue-600 font-medium text-xl">{{ song.year }}</span>
           </div>
           <div class="surface-50 p-3 flex-auto">
             <div class="text-600 mb-3">Location</div>
-            <span class="text-blue-600 font-medium text-xl">{{concert.coverage}}</span>
+            <span class="text-blue-600 font-medium text-xl">{{song.coverage}}</span>
           </div>
         </div>
           <template #footer>
@@ -68,7 +68,6 @@ export default {
   data() {
     return {
       song: null,
-      concert: {},
       guess: {
         submitted: false,
         year: null,
@@ -78,36 +77,13 @@ export default {
     };
   },
   methods: {
-    get_concert() {
-      let _self = this;
-      _self.loading = true
-      _self.concert = {}
-      axios({
-        url: "/concert",
-        method: "get",
-        params: {
-        },
-      })
-        .then(function (response) {
-          console.log(response.data)
-          _self.concert = response.data
-          _self.get_song();
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-        .finally(function () {
-        });
-    },
     get_song() {
       let _self = this;
-      _self.song=null
+      _self.loading = true;
+      _self.song=null;
       axios({
         url: "/song",
         method: "get",
-        params: {
-          "concert": _self.concert['concert_id']
-        },
       })
         .then(function (response) {
           console.log(response.data)
