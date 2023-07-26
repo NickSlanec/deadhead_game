@@ -16,29 +16,17 @@ def get_connection():
                              cursorclass=pymysql.cursors.DictCursor)
    return connection
 
-@app.route("/concert", cors=True)
-def get_concert():
-  conn = get_connection()
-  with conn:
-     with conn.cursor() as cursor:
-        query = "SELECT * FROM concert ORDER BY RAND() LIMIT 1"
-        cursor.execute(query)
-        concert = cursor.fetchone()
-        print(concert)
-        return concert
-
-@app.route("/song", cors=True)
+@app.route("/song", cors=True) 
 def get_song():
-    request = app.current_request
-    params = request.query_params
-    concert_id = params.get('concert')
     conn = get_connection()
     with conn:
       with conn.cursor() as cursor:
-          query = "SELECT * FROM song WHERE `concert_id` = {} ORDER BY RAND() LIMIT 1".format(concert_id)
+          query = "SELECT * FROM song WHERE `corrupted` = 'NO' ORDER BY RAND() LIMIT 1"
           cursor.execute(query)
           song = cursor.fetchone()
-          if song is None:
-             raise Exception("Concert has no available songs")
-          print(song)
-          return song
+          
+          query = "SELECT * FROM concert WHERE `concert_id` = {} ".format(song['concert_id'])
+          cursor.execute(query)
+          concert = cursor.fetchone()
+          data = {**song, **concert}
+          return data
