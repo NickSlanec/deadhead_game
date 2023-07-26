@@ -41,7 +41,7 @@
         <div class="flex mb-4 flex-column lg:flex-row">
           <div class="surface-50 p-3 flex-auto">
             <div class="text-600 mb-3">Song</div>
-            <span class="text-blue-600 font-medium text-xl">{{ song.data.title }}</span>
+            <span class="text-blue-600 font-medium text-xl">{{ song.title }}</span>
           </div>
           <div class="surface-50 p-3 flex-auto mx-0 my-3 lg:my-0 lg:mx-3">
             <div class="text-600 mb-3">Year</div>
