@@ -35,6 +35,7 @@ import TieredMenu from 'primevue/tieredmenu';
 import DynamicDialog from 'primevue/dynamicdialog';
 import Dialog from 'primevue/dialog';
 import Tooltip from 'primevue/tooltip';
+import Dropdown from 'primevue/dropdown';
 
 const app = createApp(App)
 
@@ -66,6 +67,7 @@ app.component('OverlayPanel', OverlayPanel)
 app.component('TieredMenu', TieredMenu)
 app.component('DynamicDialog', DynamicDialog)
 app.component('Dialog', Dialog)
+app.component('Dropdown', Dropdown)
 
 axios.defaults.baseURL = "https://kpwhjrbzk0.execute-api.us-east-1.amazonaws.com/api/" 
 
