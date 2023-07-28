@@ -16,7 +16,7 @@ def get_connection():
                              cursorclass=pymysql.cursors.DictCursor)
    return connection
 
-@app.route("/song", cors=True) 
+@app.route("/song", methods=["GET"], cors=True) 
 def get_song():
     conn = get_connection()
     with conn:
@@ -30,3 +30,16 @@ def get_song():
           concert = cursor.fetchone()
           data = {**song, **concert}
           return data
+
+@app.route("/song/{id}", methods=["PUT"], cors=True)
+def update_song(id):
+   request = app.current_request
+   body = request.json_body
+   print(body)
+   query = "UPDATE song SET corrupted = '{}' WHERE song_id = {}".format(body['corrupted'], id)
+   print(query)
+   conn = get_connection()
+   with conn:
+      with conn.cursor() as cursor:
+         cursor.execute(query)
+      conn.commit()
