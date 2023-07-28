@@ -43,3 +43,15 @@ def update_song(id):
       with conn.cursor() as cursor:
          cursor.execute(query)
       conn.commit()
+
+@app.route("/guess", methods=["PUT"], cors=True)
+def record_guess():
+  request = app.current_request
+  body = request.json_body
+  
+  query = "INSERT INTO guess (song_id, guess_year, correct) VALUES ('{}','{}',{});".format(body['song_id'], body['guess'], body['correct'])
+  conn = get_connection()
+  with conn:
+    with conn.cursor() as cursor:
+      cursor.execute(query)
+    conn.commit()
