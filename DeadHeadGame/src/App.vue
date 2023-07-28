@@ -1,5 +1,6 @@
 <template>
   <div class="surface-ground min-h-screen px-4 py-8 md:px-6 lg:px-8">
+    <Toast />
     <div class="shadow-2 border-round surface-card px-4 md:px-6 py-6">
       <div class="mb-5 font-bold text-6xl text-900">Grateful Dead Guesser</div>
       <p class="text-700 text-3xl mt-0 mb-6">Test your Grateful Dead knowledge by guessing the year of the concert</p>
@@ -22,7 +23,8 @@
         <Button class='ml-3' label="Submit" @click="guess_song()" />
       </div>
 
-      <Dialog v-model:visible="report.dialog" appendTo="body" :modal="true" :breakpoints="{ '960px': '75vw', '640px': '100vw' }" :style="{ width: '60vw' }" :showHeader="false">
+      <Dialog v-model:visible="report.dialog" appendTo="body" :modal="true"
+        :breakpoints="{ '960px': '75vw', '640px': '100vw' }" :style="{ width: '60vw' }" :showHeader="false">
         <section class="flex flex-column w-full mt-4">
           <div class="flex w-full justify-content-between mb-4">
             <span class="w-4rem h-4rem border-circle flex justify-content-center align-items-center bg-yellow-100"><i
@@ -33,7 +35,8 @@
           </div>
           <p class="font-semibold text-xl mt-0 mb-2 text-900">Report Song</p>
           <p class="font-normal text-base mt-0 mb-3 text-600">Flag song as corrupt or invalid </p>
-          <Dropdown :options="report.options" v-model="report.selected" optionLabel="name" appendTo="body" placeholder="Reason" styleClass="w-full border-round-lg"></Dropdown>
+          <Dropdown :options="report.options" v-model="report.selected" optionLabel="name" appendTo="body"
+            placeholder="Reason" styleClass="w-full border-round-lg"></Dropdown>
         </section>
         <template #footer>
           <div class="pt-3 flex">
@@ -43,7 +46,8 @@
         </template>
       </Dialog>
 
-      <Dialog v-model:visible="result_dialog" appendTo="body" :modal="true" :breakpoints="{ '960px': '75vw', '640px': '100vw' }" :style="{ width: '60vw' }" :showHeader="false">
+      <Dialog v-model:visible="result.dialog" appendTo="body" :modal="true"
+        :breakpoints="{ '960px': '75vw', '640px': '100vw' }" :style="{ width: '60vw' }" :showHeader="false">
         <div class="flex flex-column align-items-center my-4">
           <span v-if="guess.year == song.year"
             class="flex align-items-center justify-content-center bg-cyan-100 text-cyan-800 mr-3 border-circle mb-3"
@@ -55,7 +59,8 @@
             style="width:64px;height:64px">
             <i class="pi pi-times text-5xl"></i>
           </span>
-          <div v-if="guess.year == song.year" class="font-bold text-2xl text-900">You are a true deadhead. {{ guess.year }}
+          <div v-if="guess.year == song.year" class="font-bold text-2xl text-900">You are a true deadhead. {{ guess.year
+          }}
             is correct!</div>
           <div v-if="guess.year != song.year" class="font-bold text-2xl text-900">Good guess! {{ guess.year }} is about {{
             Math.abs(song.year - guess.year) }} {{ (Math.abs(song.year - guess.year) > 1) ? "years" : "year" }} off.</div>
@@ -84,7 +89,8 @@
         <template #footer>
           <div class="flex justify-content-center">
             <Button icon="pi pi-refresh" @click="play_again()" label="Play Again" class="w-4 ml-2"></Button>
-            <Button class="" icon="pi pi-exclamation-circle" severity="warning" rounded outlined aria-label="Filter" style="width: 3rem" v-tooltip="'Report a broken song'" @click="report.dialog = true" />
+            <Button class="" icon="pi pi-exclamation-circle" severity="warning" rounded outlined aria-label="Filter"
+              style="width: 3rem" v-tooltip="'Report a broken song'" @click="report.dialog = true" />
           </div>
         </template>
       </Dialog>
@@ -98,14 +104,16 @@ export default {
   data() {
     return {
       song: null,
+      loading: false,
       guess: {
         submitted: false,
         year: null,
       },
-      loading: false,
-      result_dialog: false,
+      result: {
+        dialog: false,
+      },
       report: {
-        options: [{ name: 'Too much static', value: 'Static' }, { name: 'Not a song', value: 'NonSong' }, {name: 'Other', value:'Other'}],
+        options: [{ name: 'Too much static', value: 'Static' }, { name: 'Not a song', value: 'NonSong' }, { name: 'Other', value: 'Other' }],
         selected: {},
         dialog: false
       }
@@ -136,12 +144,12 @@ export default {
         "corrupted": _self.report.selected.value
       }
       axios({
-        url: "/song/"+ _self.song.song_id,
+        url: "/song/" + _self.song.song_id,
         method: "PUT",
         data: data,
       })
         .then(function (response) {
-          console.log(response)
+          _self.show_toast('info', 'Song reported', 'We will take it out of circulation')
         })
         .catch(function (error) {
           console.log(error)
@@ -151,17 +159,38 @@ export default {
         });
     },
 
+    show_toast(severity, summary, detail) {
+      this.$toast.add({ severity: severity, summary: summary, detail: detail, life: 5000 });
+    },
+
     guess_song() {
       let _self = this;
-      if(_self.guess.submitted == false){
-        // CODE TO UPLOAD GUESS TO GUESSES TABLE 
+      if (_self.guess.submitted == false) {
+        let data = {
+          "song_id": _self.song.song_id,
+          "guess": _self.guess.year,
+          "correct": _self.guess.year == _self.song.year
+        }
+        axios({
+          url: "/guess",
+          method: "PUT",
+          data: data,
+        })
+          .then(function (response) {
+            _self.guess.submitted = true;
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+          .finally(function () {
+          });
       }
-      _self.guess.submitted = true;
-      _self.result_dialog = true;
+      _self.result.dialog = true;
     },
+
     play_again() {
       let _self = this
-      _self.result_dialog = false;
+      _self.result.dialog = false;
       _self.guess.submitted = false;
       _self.guess.year = null;
       _self.song = null;
