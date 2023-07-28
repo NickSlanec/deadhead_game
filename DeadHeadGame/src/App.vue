@@ -1,5 +1,6 @@
 <template>
   <div class="surface-ground min-h-screen px-4 py-8 md:px-6 lg:px-8">
+    <Toast/>
     <div class="shadow-2 border-round surface-card px-4 md:px-6 py-6">
       <div class="mb-5 font-bold text-6xl text-900">Grateful Dead Guesser</div>
       <p class="text-700 text-3xl mt-0 mb-6">Test your Grateful Dead knowledge by guessing the year of the concert</p>
@@ -43,7 +44,7 @@
         </template>
       </Dialog>
 
-      <Dialog v-model:visible="result_dialog" appendTo="body" :modal="true" :breakpoints="{ '960px': '75vw', '640px': '100vw' }" :style="{ width: '60vw' }" :showHeader="false">
+      <Dialog v-model:visible="result.dialog" appendTo="body" :modal="true" :breakpoints="{ '960px': '75vw', '640px': '100vw' }" :style="{ width: '60vw' }" :showHeader="false">
         <div class="flex flex-column align-items-center my-4">
           <span v-if="guess.year == song.year"
             class="flex align-items-center justify-content-center bg-cyan-100 text-cyan-800 mr-3 border-circle mb-3"
@@ -98,12 +99,14 @@ export default {
   data() {
     return {
       song: null,
+      loading: false,
       guess: {
         submitted: false,
         year: null,
       },
-      loading: false,
-      result_dialog: false,
+      result: {
+        dialog: false,
+      },
       report: {
         options: [{ name: 'Too much static', value: 'Static' }, { name: 'Not a song', value: 'NonSong' }, {name: 'Other', value:'Other'}],
         selected: {},
@@ -142,6 +145,7 @@ export default {
       })
         .then(function (response) {
           console.log(response)
+          _self.show_toast('info','Song reported', 'We will take it out of circulation')
         })
         .catch(function (error) {
           console.log(error)
@@ -151,17 +155,21 @@ export default {
         });
     },
 
+    show_toast(severity, summary, detail){
+      this.$toast.add({ severity: severity, summary: summary, detail: detail, life: 5000 });
+    },
+
     guess_song() {
       let _self = this;
       if(_self.guess.submitted == false){
         // CODE TO UPLOAD GUESS TO GUESSES TABLE 
       }
       _self.guess.submitted = true;
-      _self.result_dialog = true;
+      _self.result.dialog = true;
     },
     play_again() {
       let _self = this
-      _self.result_dialog = false;
+      _self.result.dialog = false;
       _self.guess.submitted = false;
       _self.guess.year = null;
       _self.song = null;

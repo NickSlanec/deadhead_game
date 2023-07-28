@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import PrimeVue from 'primevue/config';
 import axios from 'axios';
+import ToastService from 'primevue/toastservice';
 
 import "primevue/resources/themes/lara-light-indigo/theme.css"; //theme
 import "primevue/resources/primevue.min.css";//core
@@ -36,11 +37,13 @@ import DynamicDialog from 'primevue/dynamicdialog';
 import Dialog from 'primevue/dialog';
 import Tooltip from 'primevue/tooltip';
 import Dropdown from 'primevue/dropdown';
+import Toast from 'primevue/toast';
 
 const app = createApp(App)
 
 app.use(PrimeVue);
 app.use(DialogService);
+app.use(ToastService);
 
 app.directive('tooltip', Tooltip);
 
@@ -68,6 +71,7 @@ app.component('TieredMenu', TieredMenu)
 app.component('DynamicDialog', DynamicDialog)
 app.component('Dialog', Dialog)
 app.component('Dropdown', Dropdown)
+app.component('Toast',Toast)
 
 axios.defaults.baseURL = "https://kpwhjrbzk0.execute-api.us-east-1.amazonaws.com/api/" 
 
