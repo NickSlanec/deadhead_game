@@ -1,7 +1,8 @@
 <!-- https://dribbble.com/shots/20210947-Music-app-design-mobile-app -->
 <template>
-  <div class="surface-ground min-h-screen px-4 py-8 md:px-6 lg:px-8" style="background:radial-gradient(69.84% 69.84% at 50% 100%, rgba(21, 101, 192, 0.15) 0%, rgba(255, 255, 255, 0) 100%);">
-    <Toast />
+  <div>
+    <div class="surface-ground min-h-screen px-4 py-8 md:px-6 lg:px-8" style="background:radial-gradient(69.84% 69.84% at 50% 100%, rgba(21, 101, 192, 0.15) 0%, rgba(255, 255, 255, 0) 100%);">
+      <Toast />
       <h3 class="text-center font-bold text-3xl md:text-6xl text-black-alpha-80 mt-0 mb-4">Test your Grateful Dead knowledge <br/> <span style="background: linear-gradient(90deg, rgba(0, 209, 255, 1) 0%, rgba(255, 109, 232, 1) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; -webkit-text-fill-color: transparent;">Grateful Dead Guesser</span></h3>
 
       <div class="w-full flex justify-content-center flex-wrap">
@@ -11,19 +12,23 @@
       <ul v-if="song != null" class="list-none p-0 m-0">
           <li class="">
               <div class="p-1 flex justify-content-center">
-                <audio class="lg:w-6 md:w-10" controls>
+                <!-- <audio class="lg:w-6 md:w-10" controls>
                   <source :src="song.song_url" type="audio/mpeg">
-                </audio>
-                <Button icon="pi pi-refresh" text rounded aria-label="New Song" v-tooltip="'Get a new song'" @click="get_song()" />
-                <Button icon="pi pi-exclamation-circle" severity="warning" text rounded aria-label="Report Song" v-tooltip="'Report a broken song'" @click="report.dialog = true" />
+                </audio> -->
+                <!-- <Button icon="pi pi-refresh" text rounded aria-label="New Song" v-tooltip="'Get a new song'" @click="get_song()" /> -->
+                <!-- <Button icon="pi pi-exclamation-circle" severity="warning" text rounded aria-label="Report Song" v-tooltip="'Report a broken song'" @click="report.dialog = true" /> -->
               </div>
           </li>
           <li class="">
               <div class="py-2 flex justify-content-center flex-wrap">
-                <InputText class="" type="text" placeholder="Enter Year" v-model="guess.year" />
-                <Button class='lg:ml-3' label="Submit" @click="guess_song()" />
+                <span class="p-float-label">
+                  <div class="p-inputgroup flex-1">
+                    <InputNumber id="guess-input" v-model="guess.year" inputId="withoutgrouping" :useGrouping="false" />
+                    <Button class='lg:ml-3' label="Submit" @click="guess_song()" />
+                  </div>
+                  <label for="number-input">Enter year</label>
+                </span>
               </div>
-              
           </li>
       </ul>
 
@@ -97,12 +102,19 @@
           </div>
         </template>
       </Dialog>
+      
+    </div>
+    <div v-if="song != null" class="player">
+      <waveform :url="song.song_url"/>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import waveform from './components/waveform.vue';
 export default {
+  components: { waveform },
   data() {
     return {
       song: null,
@@ -224,6 +236,16 @@ body {
   margin-top: 1rem;
   font-weight: bold;
   box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+}
+
+.player {
+  background-color: #333;
+  overflow: hidden;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  border-radius: 15px 15px 0px 0px ;
+  height: 20vh;
 }
 
 @keyframes my-fadein {
