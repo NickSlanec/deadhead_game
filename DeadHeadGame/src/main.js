@@ -38,6 +38,7 @@ import Dialog from 'primevue/dialog';
 import Tooltip from 'primevue/tooltip';
 import Dropdown from 'primevue/dropdown';
 import Toast from 'primevue/toast';
+import Chart from 'primevue/chart';
 
 const app = createApp(App)
 
@@ -72,6 +73,7 @@ app.component('DynamicDialog', DynamicDialog)
 app.component('Dialog', Dialog)
 app.component('Dropdown', Dropdown)
 app.component('Toast',Toast)
+app.component('Chart', Chart)
 
 axios.defaults.baseURL = "https://kpwhjrbzk0.execute-api.us-east-1.amazonaws.com/api/" 
 
