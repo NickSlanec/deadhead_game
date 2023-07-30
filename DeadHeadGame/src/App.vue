@@ -1,27 +1,31 @@
+<!-- https://dribbble.com/shots/20210947-Music-app-design-mobile-app -->
 <template>
-  <div class="surface-ground min-h-screen px-4 py-8 md:px-6 lg:px-8">
+  <div class="surface-ground min-h-screen px-4 py-8 md:px-6 lg:px-8" style="background:radial-gradient(69.84% 69.84% at 50% 100%, rgba(21, 101, 192, 0.15) 0%, rgba(255, 255, 255, 0) 100%);">
     <Toast />
-    <div class="shadow-2 border-round surface-card px-4 md:px-6 py-6">
-      <div class="mb-5 font-bold text-6xl text-900">Grateful Dead Guesser</div>
-      <p class="text-700 text-3xl mt-0 mb-6">Test your Grateful Dead knowledge by guessing the year of the concert</p>
+      <h3 class="text-center font-bold text-3xl md:text-6xl text-black-alpha-80 mt-0 mb-4">Test your Grateful Dead knowledge <br/> <span style="background: linear-gradient(90deg, rgba(0, 209, 255, 1) 0%, rgba(255, 109, 232, 1) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; -webkit-text-fill-color: transparent;">Grateful Dead Guesser</span></h3>
 
       <div class="w-full flex justify-content-center flex-wrap">
         <Button v-if='song == null' rounded class='mb-4 w-3' label="Play" @click="get_song()" :loading="loading"></Button>
       </div>
 
-      <div v-if="song != null" class="w-full flex justify-content-center flex-wrap">
-        <audio class="w-6" controls>
-          <source :src="song.song_url" type="audio/mpeg">
-        </audio>
-        <Button class="ml-3" icon="pi pi-refresh" rounded outlined aria-label="Filter" v-tooltip="'Get a new song'"
-          @click="get_song()" />
-        <Button class="ml-3" icon="pi pi-exclamation-circle" severity="warning" rounded outlined aria-label="Filter"
-          v-tooltip="'Report a broken song'" @click="report.dialog = true" />
-      </div>
-      <div v-if="song != null" class="w-full flex justify-content-center flex-wrap mt-3">
-        <InputText class="ml-3" type="text" placeholder="Enter Year" v-model="guess.year" />
-        <Button class='ml-3' label="Submit" @click="guess_song()" />
-      </div>
+      <ul v-if="song != null" class="list-none p-0 m-0">
+          <li class="">
+              <div class="p-1 flex justify-content-center">
+                <audio class="lg:w-6 md:w-10" controls>
+                  <source :src="song.song_url" type="audio/mpeg">
+                </audio>
+                <Button icon="pi pi-refresh" text rounded aria-label="New Song" v-tooltip="'Get a new song'" @click="get_song()" />
+                <Button icon="pi pi-exclamation-circle" severity="warning" text rounded aria-label="Report Song" v-tooltip="'Report a broken song'" @click="report.dialog = true" />
+              </div>
+          </li>
+          <li class="">
+              <div class="py-2 flex justify-content-center flex-wrap">
+                <InputText class="" type="text" placeholder="Enter Year" v-model="guess.year" />
+                <Button class='lg:ml-3' label="Submit" @click="guess_song()" />
+              </div>
+              
+          </li>
+      </ul>
 
       <Dialog v-model:visible="report.dialog" appendTo="body" :modal="true"
         :breakpoints="{ '960px': '75vw', '640px': '100vw' }" :style="{ width: '60vw' }" :showHeader="false">
@@ -88,13 +92,11 @@
         </div>
         <template #footer>
           <div class="flex justify-content-center">
-            <Button icon="pi pi-refresh" @click="play_again()" label="Play Again" class="w-4 ml-2"></Button>
-            <Button class="" icon="pi pi-exclamation-circle" severity="warning" rounded outlined aria-label="Filter"
-              style="width: 3rem" v-tooltip="'Report a broken song'" @click="report.dialog = true" />
+            <Button icon="pi pi-refresh" @click="play_again()" label="Play Again" class=""></Button>
+            <Button class="ml-2" icon="pi pi-exclamation-circle" severity="warning" text aria-label="Filter"  v-tooltip="'Report a broken song'" @click="report.dialog = true" />
           </div>
         </template>
       </Dialog>
-    </div>
   </div>
 </template>
 
