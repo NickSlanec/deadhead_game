@@ -53,7 +53,7 @@ export default {
   methods: {
     toggleAudio() {
       let _self = this;
-      var audio = document.getElementById("audio-player");
+      var audio = document.getElementById("waveform");
       if (audio.paused) {
         audio.play();
         _self.playing = true
@@ -69,8 +69,7 @@ export default {
         url: "/song/api",
         method: "get",
         params: params,
-        headers: { Accept: "audio/mp3" }, // Set the Accept header to expect audio data
-        responseType: "arraybuffer", // Specify the expected response type as arraybuffer
+        headers: { Accept: "audio/basic" }, // Set the Accept header to expect audio data
       })
         .then(function (response) {
           console.log(response);

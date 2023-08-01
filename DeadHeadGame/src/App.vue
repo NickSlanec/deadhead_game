@@ -245,7 +245,7 @@ body {
   bottom: 0;
   width: 100%;
   border-radius: 15px 15px 0px 0px ;
-  height: 20vh;
+  height: 30vh;
 }
 
 @keyframes my-fadein {
