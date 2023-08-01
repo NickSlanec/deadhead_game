@@ -45,7 +45,7 @@ def proxy_audio():
         if response.status_code == 200:
             data = response.content
             # print(data)
-            return Response(body=data, status_code=200, headers={'Content-Type': 'audio/mp3'})
+            return Response(body=data, status_code=200, headers={'Content-Type': 'audio/basic'})
         else:
             print("NON-200")
             return Response(body={'error': 'Failed to fetch audio file'}, status_code=500)
