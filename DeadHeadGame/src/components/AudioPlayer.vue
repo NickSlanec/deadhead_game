@@ -3,7 +3,9 @@
     
     <div class="grid mb-3">
         <div class="col-12">
-            <div class="text-center p-3 border-round-sm bg-primary font-bold">12</div>
+            <!-- <div class="text-center p-3 border-round-sm bg-primary font-bold">12</div> -->
+            <!-- <AudioPlayerVue :url="url" /> -->
+            <div id="waveform"></div>
         </div>
     </div>
 
@@ -34,8 +36,14 @@
 </template>
 
 <script>
+// import AudioPlayerVue from './AudioPlayer.vue';
+import WaveSurfer from 'wavesurfer.js';
+import axios from "axios";
 // https://muhammadatt.medium.com/building-an-mp3-audio-player-in-vue-js-c5884207251c
 export default {
+  components: {
+    // AudioPlayerVue,
+  },
   props: ['url'],
   data() {
     return {
@@ -53,8 +61,59 @@ export default {
         audio.pause();
         _self.playing = false
       }
-    }
-  }
+    },
+    loadAudioData() {
+      let _self = this;
+      let params = { url: _self.url };
+      axios({
+        url: "/song/api",
+        method: "get",
+        params: params,
+        headers: { Accept: "audio/mp3" }, // Set the Accept header to expect audio data
+        responseType: "arraybuffer", // Specify the expected response type as arraybuffer
+      })
+        .then(function (response) {
+          console.log(response);
+          // Process the audio data here, for example, initialize the waveform player
+          _self.initializeWaveSurfer(response.data);
+        })
+        .catch(function (error) {
+          console.log("ERROR");
+          console.log(error);
+        })
+        .finally(function () {
+        });
+    },
+    initializeWaveSurfer(audioData) {
+      const options = {
+        container: '#waveform',
+        waveColor: 'white',
+        progressColor: 'purple',
+        cursorColor: 'white',
+        barWidth: 3,
+        barRadius: 10,
+        barGap: 2,
+        height: 50,
+        responsive: true,
+        normalize: true,
+        backend: 'MediaElement',
+      };
+
+      this.waveSurfer = WaveSurfer.create(options);
+      this.waveSurfer.loadBlob(new Blob([audioData]));
+
+      // this.waveSurfer.on('play', () => {
+      //   this.$refs.audio.play();
+      // });
+
+      // this.waveSurfer.on('pause', () => {
+      //   this.$refs.audio.pause();
+      // });
+    },
+  },
+  mounted() {
+    this.loadAudioData();
+  },
 }
 </script>
 

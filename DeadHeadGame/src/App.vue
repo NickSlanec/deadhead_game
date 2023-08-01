@@ -105,16 +105,16 @@
       
     </div>
     <div v-if="song != null" class="player">
-      <waveform :url="song.song_url"/>
+      <AudioPlayer :url="song.song_url"/>
     </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import waveform from './components/waveform.vue';
+import AudioPlayer from './components/AudioPlayer.vue';
 export default {
-  components: { waveform },
+  components: { AudioPlayer },
   data() {
     return {
       song: null,
