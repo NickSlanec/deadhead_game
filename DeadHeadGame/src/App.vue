@@ -104,7 +104,7 @@
       </Dialog>
       
     </div>
-    <div v-if="song != null" class="player">
+    <div v-if="song != null" class="mobile-player">
       <AudioPlayer :url="song.song_url"/>
     </div>
   </div>
@@ -238,15 +238,19 @@ body {
   box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
 }
 
-.player {
-  background-color: #333;
-  overflow: hidden;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  border-radius: 15px 15px 0px 0px ;
-  height: 30vh;
+@media only screen and (max-width: 600px) {
+  /* Throw the .mobile-player in here to make it only show up on mobile devices */
 }
+
+.mobile-player {
+    background-color: #333;
+    overflow: hidden;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    border-radius: 15px 15px 0px 0px ;
+    height: 20vh;
+  }
 
 @keyframes my-fadein {
   0% {
