@@ -13,7 +13,10 @@
     "primeflex": "^3.3.1",
     "primeicons": "^6.0.1",
     "primevue": "^3.29.2",
-    "vue": "^3.3.4"
+    "vue": "^3.3.4",
+    "vue-audio-visual": "^3.0.5",
+    "wavesurfer.js": "^7.1.1",
+    "wavesurfer.js-vue": "^1.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
