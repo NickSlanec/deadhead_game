@@ -1,11 +1,15 @@
 # Deadhead Guessing Game
+A simple game of guessing the year of a concert based on listening to a song. 
 
-## Deployment
-### Frontend
-The frontend deployment utilizes Amplify, which updates whenever a new commit is pushed to the main branch on github.
+https://www.marindeadhead.com/
 
-### Backend
-The backend deployment uses Chalice
-```
-chalice deploy
-```
+## Implementation
+Tools/frameworks:
+- Vue
+- PrimeVue
+- AWS Chalice
+- AWS Lambda
+- AWS API Gateway
+- AWS RDS
+- AWS Amplify
+- MySQL

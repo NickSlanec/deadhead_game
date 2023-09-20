@@ -47,6 +47,7 @@
           <p class="font-normal text-base mt-0 mb-3 text-600">Flag song as corrupt or invalid </p>
           <Dropdown :options="report.options" v-model="report.selected" optionLabel="name" appendTo="body"
             placeholder="Reason" styleClass="w-full border-round-lg"></Dropdown>
+          <InputText class="mt-3" v-if="report.selected.name == 'Other'" type="text" v-model="report.selected.value" placeholder="Describe reason"/>
         </section>
         <template #footer>
           <div class="pt-3 flex">
@@ -128,7 +129,7 @@ export default {
         dialog: false,
       },
       report: {
-        options: [{ name: 'Too much static', value: 'Static' }, { name: 'Not a song', value: 'NonSong' }, { name: 'Other', value: 'Other' }],
+        options: [{ name: 'Too much static', value: 'Static' }, { name: 'Not a song', value: 'NonSong' }, { name: 'Other', value: '' }],
         selected: {},
         dialog: false
       }
@@ -156,10 +157,10 @@ export default {
     report_song() {
       let _self = this;
       let data = {
-        "corrupted": _self.report.selected.value
+        "reason": _self.report.selected.value
       }
       axios({
-        url: "/song/" + _self.song.song_id,
+        url: "/song/" + _self.song.song_id + "/report",
         method: "PUT",
         data: data,
       })
@@ -167,6 +168,7 @@ export default {
           _self.show_toast('info', 'Song reported', 'We will take it out of circulation')
         })
         .catch(function (error) {
+          _self.show_toast('error', 'Error', 'Failed to report song')
           console.log(error)
         })
         .finally(function () {

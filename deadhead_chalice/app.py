@@ -3,6 +3,7 @@ import requests
 import random
 import pymysql
 import os
+from datetime import datetime
 #https://www.youtube.com/watch?v=RerDL93sBdY
 
 app = Chalice(app_name='deadhead_chalice')
@@ -51,10 +52,25 @@ def record_guess():
   print("Recording Guess")
   request = app.current_request
   body = request.json_body
+  now = datetime.now()
   
-  query = "INSERT INTO guess (song_id, guess_year, correct, date) VALUES ('{}','{}',{},'{}');".format(body['song_id'], body['guess'], body['correct'], body['date'])
+  query = "INSERT INTO guess (song_id, guess_year, correct, date) VALUES ('{}','{}',{});".format(body['song_id'], body['guess'], body['correct'], now)
   conn = get_connection()
   with conn:
     with conn.cursor() as cursor:
       cursor.execute(query)
     conn.commit()
+
+@app.route("/song/{id}/report", methods=["PUT"], cors=True)
+def report_song(id):
+   request = app.current_request
+   body = request.json_body
+   now = datetime.now()
+   print(body)
+   query = "INSERT INTO report (song_id, reason, date) VALUES ('{}', '{}', '{}');".format(id, body['reason'], now)
+   print(query)
+   conn = get_connection()
+   with conn:
+      with conn.cursor() as cursor:
+         cursor.execute(query)
+      conn.commit()
