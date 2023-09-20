@@ -15,6 +15,7 @@
     "primevue": "^3.29.2",
     "vue": "^3.3.4",
     "vue-audio-visual": "^3.0.5",
+    "vue-cookies": "^1.8.3",
     "wavesurfer.js": "^7.1.1",
     "wavesurfer.js-vue": "^1.0.0"
   },
