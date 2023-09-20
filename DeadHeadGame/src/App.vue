@@ -4,6 +4,7 @@
     <div class="home-background surface-ground min-h-screen px-4 py-8 md:px-6 lg:px-8">
       <Toast />
       <h3 class="text-center font-bold text-3xl md:text-6xl text-black-alpha-80 mt-0 mb-4">Test your Grateful Dead knowledge <br/> <span class="highlight-title">Grateful Dead Guesser</span></h3>
+      <p class="text-center mt-0 mb-4" style="color:grey">Listen to a song from a Grateful Dead concert and guess the year it was played</p>
 
       <div class="w-full flex justify-content-center flex-wrap">
         <Button v-if='song == null' rounded class='mb-4 w-3' label="Play" @click="get_song()" :loading="loading"></Button>
@@ -181,12 +182,16 @@ export default {
 
     guess_song() {
       let _self = this;
+      let now = new Date()
       if (_self.guess.submitted == false) {
         let data = {
           "song_id": _self.song.song_id,
           "guess": _self.guess.year,
-          "correct": _self.guess.year == _self.song.year
+          "correct": _self.guess.year == _self.song.year,
+          "date": now.toISOString(),
         }
+        _self.set_cookies();
+
         axios({
           url: "/guess",
           method: "PUT",
@@ -201,7 +206,45 @@ export default {
           .finally(function () {
           });
       }
+
       _self.result.dialog = true;
+    },
+
+    calculate_score(){
+      let _self = this;
+      let guess = _self.guess.year;
+      let answer = _self.song.year;
+      let difference = Math.abs(_self.guess.year - _self.song.year)
+      let points = 0
+      if (difference == 0){
+        points = 10
+      } else if (difference == 1){
+        points = 8
+      } else if (difference == 2){
+        points = 5
+      }
+      return points
+    },
+
+    set_cookies(){
+      if (this.$cookies.isKey('guesses')){
+        let guesses = this.$cookies.get('guesses')
+        guesses++
+        this.$cookies.set("guesses",guesses, Infinity);
+      } else {
+        this.$cookies.set("guesses",1, Infinity);
+      }
+
+      if(this.guess.year == this.song.year){
+        if (this.$cookies.isKey('correct')){
+          let correct = this.$cookies.get('correct')
+          correct++
+          this.$cookies.set("correct",correct, Infinity);
+        } else {
+          this.$cookies.set("correct",1, Infinity);
+        }
+      }
+      
     },
 
     play_again() {
@@ -211,7 +254,7 @@ export default {
       _self.guess.year = null;
       _self.song = null;
       _self.get_song();
-    }
+    },
   },
   mounted() { },
 }

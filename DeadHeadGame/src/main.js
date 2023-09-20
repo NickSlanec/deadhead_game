@@ -3,6 +3,7 @@ import App from './App.vue'
 import PrimeVue from 'primevue/config';
 import axios from 'axios';
 import ToastService from 'primevue/toastservice';
+import VueCookies from 'vue-cookies'
 
 import "primevue/resources/themes/lara-light-indigo/theme.css"; //theme
 import "primevue/resources/primevue.min.css";//core
@@ -46,6 +47,7 @@ const app = createApp(App)
 app.use(PrimeVue);
 app.use(DialogService);
 app.use(ToastService);
+app.use(VueCookies)
 
 app.directive('tooltip', Tooltip);
 
@@ -78,5 +80,6 @@ app.component('Chart', Chart)
 app.component('InputNumber', InputNumber)
 
 axios.defaults.baseURL = "https://kpwhjrbzk0.execute-api.us-east-1.amazonaws.com/api/" 
+// axios.defaults.baseURL = "http://127.0.0.1:8000"
 
 app.mount('#app')
