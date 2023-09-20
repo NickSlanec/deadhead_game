@@ -52,7 +52,7 @@ def record_guess():
   request = app.current_request
   body = request.json_body
   
-  query = "INSERT INTO guess (song_id, guess_year, correct) VALUES ('{}','{}',{});".format(body['song_id'], body['guess'], body['correct'])
+  query = "INSERT INTO guess (song_id, guess_year, correct, date) VALUES ('{}','{}',{},'{}');".format(body['song_id'], body['guess'], body['correct'], body['date'])
   conn = get_connection()
   with conn:
     with conn.cursor() as cursor:
